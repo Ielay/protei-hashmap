@@ -1,6 +1,7 @@
 package proteihashmap.hashmap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -79,7 +80,11 @@ public class MyHashMap<K, V> {
 
         Entry<K, V> newEntry = new Entry<>(key, value);
 
-        int hash = hash(key);
+        int hash = 0;
+
+        if (key != null) {
+            hash = hash(key);
+        }
 
         if (entries[hash] == null) {
             entries[hash] = new LinkedList<>();
@@ -95,7 +100,12 @@ public class MyHashMap<K, V> {
     }
 
     public V search(K key) { //getValueByKey
-        int wantedEntryHash = hash(key);
+
+        int wantedEntryHash = 0;
+
+        if (key != null) {
+            wantedEntryHash = hash(key);
+        }
 
         if (entries[wantedEntryHash] == null) {
             return null; //not found
@@ -104,8 +114,17 @@ public class MyHashMap<K, V> {
         List<Entry<K, V>> entryList = entries[wantedEntryHash];
 
         for (Entry<K, V> entry : entryList) {
-            if (entry.getKey().equals(key)) {   //if found
-                return entry.getValue();        //then return value
+            K entryKey = entry.getKey();
+
+            if (key == null) { //null key case
+                if (entryKey == null) {
+                    return entry.getValue();
+                }
+            }
+            else if (entryKey != null) {
+                if (entryKey.equals(key)) {         //if found
+                    return entry.getValue();        //then return value
+                }
             }
         }
 
@@ -113,7 +132,11 @@ public class MyHashMap<K, V> {
     }
 
     public V remove(K key) { //deleteFromEntriesByKeyAndValue
-        int wantedEntryHash = hash(key);
+        int wantedEntryHash = 0;
+
+        if (key != null) {
+            wantedEntryHash = hash(key);
+        }
 
         if (entries[wantedEntryHash] == null) {
             return null; //not found
@@ -124,9 +147,19 @@ public class MyHashMap<K, V> {
         int elementIndex = 0;
 
         for (Entry<K, V> entry : entryList) {
-            if (entry.getKey().equals(key)) {
-                --size;
-                return entryList.remove(elementIndex).getValue();
+            K entryKey = entry.getKey();
+
+            if (key == null) { //null key case
+                if (entryKey == null) {
+                    -- size;
+                    return entryList.remove(elementIndex).getValue();
+                }
+            }
+            else if (entryKey != null) {
+                if (entryKey.equals(key)) {
+                    --size;
+                    return entryList.remove(elementIndex).getValue();
+                }
             }
 
             ++elementIndex;
