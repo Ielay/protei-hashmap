@@ -77,7 +77,27 @@ public class MyHashMapTest {
     public void testRemovedKeyNotFoundCorrect() {
         MyHashMap<String, Integer> hashMap = new MyHashMap<>(16, (x) -> x.hashCode(), 0.75d);
 
+        int startedMapSize = hashMap.size();
+
         Assert.assertEquals(null, hashMap.remove("qwerty"));
+
+        Assert.assertEquals(startedMapSize, hashMap.size());
+    }
+
+    @Test
+    public void testRemoveNullKeyCorrect() {
+        MyHashMap<String, Integer> hashMap = new MyHashMap<>(16, (x) -> x.hashCode(), 0.75d);
+
+        String nullKey = null;
+        Integer value = 1234;
+
+        hashMap.add(nullKey, value);
+
+        int startedMapSize = hashMap.size();
+
+        Assert.assertEquals(value, hashMap.remove(nullKey));
+
+        Assert.assertEquals(startedMapSize - 1, hashMap.size());
     }
 
     @Test
@@ -102,5 +122,12 @@ public class MyHashMapTest {
         hashMap.add(key, value);
 
         Assert.assertEquals(value, hashMap.search(key));
+    }
+
+    @Test
+    public void testSearchByNonexistentKeyCorrect() {
+        MyHashMap<String, Integer> hashMap = new MyHashMap<>(16, (x) -> x.hashCode(), 0.75d);
+
+        Assert.assertEquals(null, hashMap.search("qwerty"));
     }
 }
