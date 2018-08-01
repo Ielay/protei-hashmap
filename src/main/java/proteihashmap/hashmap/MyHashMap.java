@@ -20,9 +20,11 @@ public class MyHashMap<K, V> {
 
     private final int MAX_CAPACITY_VALUE = (Integer.MAX_VALUE / 2);
 
+    private final int MAX_MAP_SIZE = Integer.MAX_VALUE;
+
 //    private final double DEFAULT_LOAD_FACTOR = 0.5;
 
-    private List<List<Entry<K, V>>> entries;
+    private List<Entry<K, V>>[] entries;
 
     private Function<K, Integer> hashFunction;
 
@@ -33,7 +35,7 @@ public class MyHashMap<K, V> {
         this.threshold = (int) (loadFactor * capacity);
         this.size = 0;
 
-        entries = new ArrayList<>(capacity);
+        entries = new List[capacity];
     }
 
     private int hash(K key) {
@@ -49,7 +51,7 @@ public class MyHashMap<K, V> {
         capacity = 2 * capacity;
         threshold = (int) (capacity * loadFactor);
 
-        List<List<Entry<K, V>>> resizedList = new ArrayList<>(capacity);
+        List<Entry<K, V>>[] resizedList = new List[capacity];
 
         for (List<Entry<K, V>> entryList : entries) {
             if (entryList == null) { //should I check this?
@@ -59,11 +61,11 @@ public class MyHashMap<K, V> {
             for (Entry<K, V> entry : entryList) {
                 int entryHash = hash(entry.getKey());
 
-                if (resizedList.get(entryHash) == null) {
-                    resizedList.set(entryHash, new LinkedList<>());
+                if (resizedList[entryHash] == null) {
+                    resizedList[entryHash] = new LinkedList<>();
                 }
 
-                resizedList.get(entryHash).add(entry);
+                resizedList[entryHash].add(entry);
             }
         }
 
@@ -71,15 +73,19 @@ public class MyHashMap<K, V> {
     }
 
     public boolean add(K key, V value) { //putEntry
+        if (size == MAX_MAP_SIZE) {
+            return false;
+        }
+
         Entry<K, V> newEntry = new Entry<>(key, value);
 
         int hash = hash(key);
 
-        if (entries.get(hash) == null) {
-            entries.set(hash, new LinkedList<>());
+        if (entries[hash] == null) {
+            entries[hash] = new LinkedList<>();
         }
 
-        entries.get(hash).add(newEntry);
+        entries[hash].add(newEntry);
 
         if (++size == threshold) {
             resize();
@@ -91,11 +97,11 @@ public class MyHashMap<K, V> {
     public V search(K key) { //getValueByKey
         int wantedEntryHash = hash(key);
 
-        if (entries.get(wantedEntryHash) == null) {
+        if (entries[wantedEntryHash] == null) {
             return null; //not found
         }
 
-        List<Entry<K, V>> entryList = entries.get(wantedEntryHash);
+        List<Entry<K, V>> entryList = entries[wantedEntryHash];
 
         for (Entry<K, V> entry : entryList) {
             if (entry.getKey().equals(key)) {   //if found
@@ -109,11 +115,11 @@ public class MyHashMap<K, V> {
     public V remove(K key) { //deleteFromEntriesByKeyAndValue
         int wantedEntryHash = hash(key);
 
-        if (entries.get(wantedEntryHash) == null) {
+        if (entries[wantedEntryHash] == null) {
             return null; //not found
         }
 
-        List<Entry<K, V>> entryList = entries.get(wantedEntryHash);
+        List<Entry<K, V>> entryList = entries[wantedEntryHash];
 
         int elementIndex = 0;
 
@@ -129,7 +135,7 @@ public class MyHashMap<K, V> {
         return null; //not found
     }
 
-    public long size() {
+    public int size() {
         return this.size;
     }
 
