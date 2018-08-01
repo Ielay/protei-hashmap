@@ -79,4 +79,28 @@ public class MyHashMapTest {
 
         Assert.assertEquals(null, hashMap.remove("qwerty"));
     }
+
+    @Test
+    public void testSearchValidEntryCorrect() {
+        MyHashMap<String, Integer> hashMap = new MyHashMap<>(16, (x) -> x.hashCode(), 0.75d);
+
+        String key = "aaa";
+        Integer value = 1;
+
+        hashMap.add(key, value);
+
+        Assert.assertEquals(value, hashMap.search(key));
+    }
+
+    @Test
+    public void testSearchValueByNullKeyCorrect() {
+        MyHashMap<String, Integer> hashMap = new MyHashMap<>(16, (x) -> x.hashCode(), 0.75d);
+
+        String key = null;
+        Integer value = 1;
+
+        hashMap.add(key, value);
+
+        Assert.assertEquals(value, hashMap.search(key));
+    }
 }
