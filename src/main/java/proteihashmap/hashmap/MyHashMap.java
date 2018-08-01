@@ -40,7 +40,7 @@ public class MyHashMap<K, V> {
     }
 
     private int hash(K key) {
-        return hashFunction.apply(key) % capacity;
+        return Math.abs(hashFunction.apply(key) % capacity);
     }
 
     private void resize() {
