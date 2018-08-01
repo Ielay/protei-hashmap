@@ -57,4 +57,26 @@ public class MyHashMapTest {
         Assert.assertEquals(valueToAdd, hashMap.search(keyToAdd));
     }
 
+    @Test
+    public void testRemoveEntryCorrect() {
+        MyHashMap<String, Integer> hashMap = new MyHashMap<>(16, (x) -> x.hashCode(), 0.75d);
+
+        String key = "aaa";
+        Integer value = 1;
+
+        hashMap.add(key, value);
+
+        int startedMapSize = hashMap.size();
+
+        Assert.assertEquals(value, hashMap.remove(key));
+
+        Assert.assertEquals(startedMapSize - 1, hashMap.size());
+    }
+
+    @Test
+    public void testRemovedKeyNotFoundCorrect() {
+        MyHashMap<String, Integer> hashMap = new MyHashMap<>(16, (x) -> x.hashCode(), 0.75d);
+
+        Assert.assertEquals(null, hashMap.remove("qwerty"));
+    }
 }
